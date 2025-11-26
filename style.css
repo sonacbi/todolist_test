@@ -1,0 +1,527 @@
+/* reset */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height:100%; font-family: "Noto Sans KR", sans-serif; }
+ul, li { list-style: none; }
+button { cursor: pointer; }
+a { text-decoration:none; color:inherit; }
+
+:root {
+  --header-footer-h: 10vh;
+  --filter-h: 70px;
+  --list-content-w: 320px;
+  --gap: 12px;
+  --accent: #2b7cff;
+  --danger: #ff5c5c;
+  --muted: #9aa3b2;
+}
+
+body {
+  display: grid;
+  grid-template-rows: var(--header-footer-h) 1fr var(--header-footer-h);
+  background:#f7f8fb;
+}
+
+/* header/footer */
+.site-header, .site-footer {
+  background:#fff;
+  display:flex;
+  align-items:center;
+  border-bottom:1px solid #e6e9ee;
+}
+.site-footer { border-top:1px solid #e6e9ee; border-bottom:none; }
+
+.header-inner, .footer-inner {
+  width:min(1200px,95%);
+  margin:0 auto;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+/* content */
+.content {
+  display: flex;
+  flex-direction: column;
+  width: 95%;       /* 기본 너비 */
+  max-width: 1200px; /* 최대 폭 */
+  margin: 0 auto;
+  padding: 12px;
+  gap: var(--gap);
+}
+
+/* filter */
+.filter {
+  height:var(--filter-h);
+  background:#fff;
+  border:1px solid #e6e9ee;
+  border-radius:8px;
+  padding:10px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+}
+.filter-row, .categoryPanel {
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+
+/* listbox */
+.listbox {
+  flex:1;
+  overflow: hidden; /* 부모가 늘어나지 않게 */
+}
+.list-wrapper {
+  height:100%;
+  overflow-x:auto;
+  width: 100%; /* 부모 폭에 맞춤 */
+  display:flex;
+  gap:16px;
+  padding-bottom:6px;
+  scroll-behavior:smooth;
+}
+
+.list-wrapper > .listContent {
+  flex-shrink: 0;
+}
+
+#addListContentBtn {
+  padding: 8px 12px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+#addListContentBtn:hover {
+  background-color: #45a049;
+}
+
+/* -------- main listContent -------- */
+.listContent {
+  width:var(--list-content-w);
+  min-width:var(--list-content-w);
+  height:100%;
+  background:#fff;
+  border-radius:10px;
+  border:1px solid #e6e9ee;
+  box-shadow:0 4px 14px rgba(0,0,0,0.05);
+  padding:12px;
+  display:flex;
+  flex-direction:column;
+}
+
+.listTitle {
+  display:flex;
+  align-items:center;
+  gap:10px;
+  font-size:1.05rem;
+  font-weight:700;
+}
+
+.modify_button, .del_button {
+  padding:4px 6px;
+  background:#f3f6fb;
+  border:1px solid #dce2f1;
+  border-radius:6px;
+}
+.del_button.pending {
+  background:#ffe7e7;
+  border-color:#ffb1b1;
+  color:var(--danger);
+  text-decoration:line-through;
+}
+
+/* -------- todolist (multiple inside listContent) -------- */
+.todolist {
+  border:1px solid #eef2f7;
+  border-radius:8px;
+  padding:10px;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  margin-top:10px;
+  background:#fafbfd;
+}
+
+.topPanel {
+  display:flex;
+  gap:8px;
+  align-items:center;
+}
+
+.bottomPanel {
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+
+.content_area {
+  flex:1;
+  min-height:36px;
+  max-height:80px;
+  border:1px dashed #cfd6e4;
+  border-radius:6px;
+  padding:6px 10px;
+  overflow:hidden;
+  white-space:nowrap;
+}
+
+.content_area[contenteditable="true"]:empty::before {
+  content:"내용 입력 (최대 16자)";
+  color:var(--muted);
+}
+
+/* save note */
+.save-note {
+  font-size:0.8rem;
+  color:var(--muted);
+  opacity:0;
+  transition:0.2s;
+}
+.save-note.active { opacity:1; }
+
+.save-btn {
+  margin-left:auto;
+  padding:6px 10px;
+  border-radius:6px;
+  border:1px solid #bdd4ff;
+  background:#eaf2ff;
+  color:var(--accent);
+}
+.save-btn.disabled {
+  opacity:0.3;
+  pointer-events:none;
+}
+
+.addTodoBtn {
+  display: inline-block;
+  margin: 8px 0;
+  padding: 4px 12px;
+  background: #4caf50;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.2s ease;
+}
+.addTodoBtn:hover {
+  background: #45a049;
+}
+.addTodoBtn:active {
+  transform: scale(0.97);
+}
+
+/* 모달 배경 */
+.custom-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+/* 모달 박스 */
+.custom-modal .modal-content {
+  background: #fff;
+  padding: 20px 30px;
+  border-radius: 10px;
+  max-width: 400px;
+  width: 90%;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  font-family: 'Noto Sans KR', sans-serif;
+}
+
+/* 모달 문구 */
+.custom-modal p {
+  font-size: 16px;
+  margin-bottom: 20px;
+}
+
+/* 버튼 그룹 */
+.custom-modal .modal-buttons {
+  display: flex;
+  justify-content: space-around;
+}
+
+/* 버튼 스타일 */
+.custom-modal button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background 0.2s;
+}
+
+.custom-modal #yesBtn {
+  background-color: #4caf50;
+  color: #fff;
+}
+.custom-modal #yesBtn:hover {
+  background-color: #45a049;
+}
+
+.custom-modal #noBtn {
+  background-color: #f44336;
+  color: #fff;
+}
+.custom-modal #noBtn:hover {
+  background-color: #e53935;
+}
+
+/* categoryPanel 전체 */
+#categoryPanel {
+  display: flex;
+  align-items: center;
+  padding: 6px 10px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  width: auto;             /* nav 폭 따라감 */
+  max-width: 100%;
+  height: 60px;             /* nav 높이에 딱 맞춤 */
+  overflow: hidden;         /* 한 줄 고정 */
+  gap: 6px;
+}
+
+/* category_create 영역 */
+#category_create,
+#category_modify {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;       /* 절대 줄어들지 않음 */
+}
+
+/* 입력창 (create/modify 통일) */
+#category_create input,
+#category_modify input {
+  width: 100px;             /* 폭 고정 */
+  padding: 4px 8px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 0.9rem;
+  flex-shrink: 0;
+}
+
+/* 버튼 스타일 (create/modify 통일) */
+#category_create button,
+#category_modify button {
+  padding: 4px 8px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-size: 0.85rem;
+  flex-shrink: 0;
+  transition: background-color 0.2s;
+}
+
+/* category_modify 버튼 개별 색상 */
+#modifyCategoryBtn { background-color: #4caf50; color:#fff; }
+#modifyCategoryBtn:hover { background-color:#45a049; }
+
+#delCategoryBtn { background-color: var(--danger); color:#fff; }
+#delCategoryBtn:hover { background-color:#e53935; }
+
+#moveUpCategoryBtn, #moveDownCategoryBtn { background-color: #ff9800; color:#fff; }
+#moveUpCategoryBtn:hover, #moveDownCategoryBtn:hover { background-color: #fb8c00; }
+
+/* category_modify 영역 */
+
+/* categoryList: 폭 고정, 스크롤 가능 */
+#categoryList {
+  display: flex;
+  align-items: center;
+  overflow-x: hidden;  /* 스크롤 숨김 */
+  overflow-y: hidden;  /* 스크롤 숨김 */
+  gap: 6px;
+  height: 20px;
+  width: 300px;
+  padding: 4px 6px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background-color: #fff;
+  white-space: nowrap;
+  scroll-behavior: smooth;
+}
+
+/* 각 카테고리 박스 폭 고정 */
+#categoryList > div {
+  flex: 0 0 80px;
+  text-align: center;
+  padding: 6px 4px;
+  border-radius: 6px;
+  background-color: #e0e0e0;
+  cursor: pointer;
+  font-size: 0.85rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: background-color 0.2s;
+}
+
+#categoryList > div:hover { background-color: #c0c0c0; }
+#categoryList > div.active { background-color: var(--accent); color: #fff; }
+
+/* filter-row 라벨 꾸미기 */
+.filter-row label {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #333;
+  margin-right: 4px;
+  white-space: nowrap;
+}
+
+/* filter-row select 박스 꾸미기 */
+.filter-row select {
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  font-size: 0.9rem;
+  color: #333;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+/* hover & focus 효과 */
+.filter-row select:hover {
+  border-color: #a8c9ff;
+  background-color: #f0f5ff;
+}
+
+.filter-row select:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 4px rgba(43,124,255,0.4);
+}
+
+/* filter-row 내부 요소 간격 유지 */
+.filter-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+
+/* 로컬 저장 & 불러오기 버튼 꾸미기 */
+#saveBackup,
+.file-btn {
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: 1px solid #bdd4ff;
+  background-color: #eaf2ff;
+  color: var(--accent);
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+#saveBackup:hover,
+.file-btn:hover {
+  background-color: #d6e6ff;
+  border-color: #a8c9ff;
+}
+
+#saveBackup:active,
+.file-btn:active {
+  transform: scale(0.97);
+}
+
+/* 파일 입력 숨김 */
+.file-btn input[type="file"] {
+  display: none;
+}
+
+@media (max-width: 600px) {
+  body {
+    grid-template-rows: auto 1fr auto;
+  }
+
+  .site-header, .site-footer {
+    padding: 8px;
+    height: auto;
+  }
+
+  .header-inner, .footer-inner {
+    width: 100%;
+    justify-content: space-between;
+    flex-wrap: wrap;
+  }
+
+  .content {
+    width: 100%;
+    max-width: 100%;
+    padding: 8px;
+    margin: 0 auto;
+  }
+
+
+  .list-wrapper {
+    width: 100vw;      /* 부모 폭이 아닌 내부 콘텐츠 폭 기준 */
+  }
+
+
+
+  .addTodoBtn,
+  .save-btn {
+    width: 100%;
+    text-align: center;
+  }
+
+  .filter {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 6px;
+    height: 100px;
+  }
+
+  .filter-row, .categoryPanel {
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    gap: 4px;
+  }
+  #categoryPanel {
+    display: flex;
+    flex-direction: row;
+    gap: 4px;
+    align-items: center;
+  }
+
+  /* categoryList가 남은 공간 차지 */
+  #categoryList {
+    flex: 1 1 auto;   /* grow 1, shrink 1, 기본 auto */
+    min-width: 0;     /* overflow 시 제대로 줄어들도록 */
+    overflow-x: auto;
+  }
+
+#category_create input,
+#category_modify input {
+  width: 120px;       /* 최소 폭 지정 */
+  min-width: 120px;   /* 줄어들지 않도록 최소 폭 고정 */
+  max-width: 200px;   /* 너무 커지지 않도록 최대 폭 */
+  padding: 4px 8px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 0.9rem;
+  flex-shrink: 0;     /* flex 컨테이너에서 줄어들지 않음 */
+}
+
+  #category_create, #category_modify {
+    flex-wrap: wrap;
+  }
+}
