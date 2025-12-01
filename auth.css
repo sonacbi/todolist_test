@@ -1,0 +1,108 @@
+/* ---------- 회원가입 / 로그인 페이지 전용 ---------- */
+body {
+  background: #f7f8fb;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.content {
+  background: #fff;
+  padding: 24px 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  max-width: 400px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.content h2 {
+  text-align: center;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #333;
+}
+
+.content form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.content label {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #555;
+}
+
+.content input[type="email"],
+.content input[type="password"] {
+  padding: 10px 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.content input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 5px rgba(43,124,255,0.3);
+}
+
+.content button {
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+  background-color: var(--accent);
+  color: #ffffff;
+  background-color: #ccdfff;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+}
+
+.content button:hover {
+  background-color: #1f5fcc;
+}
+
+.content button:active {
+  transform: scale(0.98);
+}
+
+.content p {
+  text-align: center;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.content a {
+  color: var(--accent);
+  font-weight: 500;
+}
+
+@media (max-width: 480px) {
+  .content {
+    padding: 20px 16px;
+    gap: 12px;
+  }
+
+  .content h2 {
+    font-size: 1.5rem;
+  }
+
+  .content input[type="email"],
+  .content input[type="password"] {
+    padding: 8px 10px;
+    font-size: 0.9rem;
+  }
+
+  .content button {
+    padding: 8px;
+    font-size: 0.95rem;
+  }
+}

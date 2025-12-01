@@ -563,3 +563,29 @@ importFileInput.addEventListener("change", async e => {
 ************************/
 renderSorted();
 
+// 로그인 상태 확인
+const userDiv = document.querySelector(".user");
+const logoutBtn = document.getElementById("logoutBtn");
+
+// 로컬에 저장된 로그인 정보 확인
+const loggedUser = localStorage.getItem("loggedUser");
+
+if (userDiv && logoutBtn) {
+  if (loggedUser) {
+    // 로그인 상태
+    userDiv.textContent = `사용자: ${loggedUser}`;
+    logoutBtn.textContent = "로그아웃";
+    logoutBtn.onclick = () => {
+      localStorage.removeItem("loggedUser");
+      alert("로그아웃 되었습니다.");
+      location.reload(); // 새로고침 후 로그인 버튼 표시
+    };
+  } else {
+    // 비회원 상태
+    userDiv.textContent = "사용자: 비회원";
+    logoutBtn.textContent = "로그인";
+    logoutBtn.onclick = () => {
+      window.location.href = "login.html"; // 로그인 페이지 이동
+    };
+  }
+}
